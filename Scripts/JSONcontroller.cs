@@ -24,8 +24,7 @@ public class JSONcontroller : MonoBehaviour
 
     JSONdataclass[] items;
     public GameObject s;
-    public bool FetchDone = false;
-    public bool DlDone = false;
+  
     public void Start()
     {
         if (File.Exists(Application.persistentDataPath + "Saved.json"))
@@ -41,20 +40,9 @@ public class JSONcontroller : MonoBehaviour
     
     public void Fetch()
     {
-
-        if (!FetchDone)
-        {
-            StartCoroutine(GetData());
-            FetchDone = true;
-        }
-
-        else
-        {
-            Debug.Log("Data Already Saved");
-        }
+       StartCoroutine("GetData");
     }
 
-    [Obsolete]
     IEnumerator GetData()
     {
         string url = "https://testinterest.s3.amazonaws.com/interest.json";
@@ -64,18 +52,13 @@ public class JSONcontroller : MonoBehaviour
         yield return request.Send();
         if (request.isDone)
         {   
-            
-            items = JsonHelper.GetArray<JSONdataclass>(request.downloadHandler.text);
             Debug.Log("successful");
             
             string path = Application.persistentDataPath + "Saved.json";
             File.WriteAllText(path, request.downloadHandler.text);
-            
-            
-        }
+         }
         else
         {
-
             Debug.Log("error");
         }
 
@@ -130,17 +113,7 @@ public class JSONcontroller : MonoBehaviour
     }
     public void Show()
     {
-
-        if (!DlDone)
-        {
-            StartCoroutine(DlImages());
-            DlDone = true;
-            
-        }
-        else
-        {
-            Debug.Log("Data Already Displayed");
-        }
+        StartCoroutine(DlImages());   
     }
     public void CloseApp()
     {
